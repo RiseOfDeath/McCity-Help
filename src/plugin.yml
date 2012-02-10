@@ -1,0 +1,22 @@
+name: McCity Help
+main: RiseOfDeath.Help.Help
+author: RiseOfDeath
+version: 0.1.5b
+database: false
+softdepend: [Permissions]
+website: minecraft-mccity.ru
+commands:
+   help:
+      description: use for getting help
+      usage: |
+         /help - for help
+         /help [topic_name] - print this topic
+   adminhelp:
+      description: use for getting help
+      usage: |
+         /adminhelp new [title]- create new topic
+         /adminhelp addstring [topic's string]  - add new string into this topic
+         /adminhelp permission [permission] - set permission (default mccityhelp.user)
+         /adminhelp save [path] - save it at /main/%path%/%title%.yml
+         /adminhelp save - save it at /main/%title%.yml
+         /adminhelp color - show you Chat Colors
