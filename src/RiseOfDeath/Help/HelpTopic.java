@@ -72,13 +72,13 @@ public class HelpTopic {
 	
 	public String getSubjectString()
 	{
-		String strBuf=new String();
+		/*String strBuf=new String();
 		for(String i : Subject)
 		{
 			strBuf+=i;
 			strBuf+="<endl>";
-		}
-		return strBuf;
+		}*/
+		return this.toString();
 	}
 	
 	public void addSubjectString(String SubjectString)
@@ -119,6 +119,21 @@ public class HelpTopic {
 	{
 		return Sections;
 		
+	}
+	
+	/*
+	 * А что делать.. надо такие вещи делать, надо...
+	 * Только даже не знаю, тчо тут вернуть можно.. не выдавать же все в  одной строке...
+	 */
+	public String toString()
+	{
+		String strBuf=new String();
+		for(String i : Subject)
+		{
+			strBuf+=i;
+			strBuf+="<endl>";
+		}
+		return strBuf;
 	}
 
 }
