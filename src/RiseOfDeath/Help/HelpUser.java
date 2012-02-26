@@ -5,7 +5,7 @@ import java.util.List;
 
 public class HelpUser {
 	private String PlayerName;
-	private HelpTopic LastTopic;
+	//private HelpTopic LastTopic;
 	private List<HelpTopic> History;
 	
 	public HelpUser()
@@ -38,7 +38,7 @@ public class HelpUser {
 	}
 	
 	/*
-	 * Добавляет в историю что-то
+	 * Добавляет в историю топик
 	 */
 	public void addToHistroy(HelpTopic LastTopic)
 	{
@@ -82,7 +82,7 @@ public class HelpUser {
 	/*
 	 * Вы не поверите...
 	 */
-	public int getHistorySize()
+	public int Size()
 	{
 		return History.size();
 	}

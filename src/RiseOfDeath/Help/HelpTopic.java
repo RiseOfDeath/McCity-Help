@@ -62,22 +62,23 @@ public class HelpTopic {
 	public void printSubject(Player Player, int strPerPage, int Page)
 	{
 		Player.sendMessage(ChatColor.AQUA + "Subject:");
-		for(int i=(Page-1)*strPerPage;i<Page*strPerPage;i++)
+		for(int i=(Page-1)*strPerPage;(i<Page*strPerPage)&(i<Subject.size());i++)
 		{
 			Player.sendMessage(Subject.get(i));
 		}
-		Player.sendMessage(ChatColor.AQUA + "End subject.");
+		if(Page*strPerPage>=Subject.size())
+		{
+			Player.sendMessage(ChatColor.AQUA + "End subject");
+		}
+		else
+		{
+			Player.sendMessage(ChatColor.AQUA + "End page.");
+		}
 	}
 	
 	
 	public String getSubjectString()
 	{
-		/*String strBuf=new String();
-		for(String i : Subject)
-		{
-			strBuf+=i;
-			strBuf+="<endl>";
-		}*/
 		return this.toString();
 	}
 	

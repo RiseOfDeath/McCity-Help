@@ -144,7 +144,14 @@ public class Help extends JavaPlugin{
 									{
 										if(hasPerm((Player)sender,Users.get(i).getLastTipic().getSections().get(j).getPermissions(), true))
 										{
-											Users.get(i).getLastTipic().getSections().get(j).printSubject((Player)sender);
+											if(args.length>1)
+											{
+												Users.get(i).getLastTipic().getSections().get(j).printSubject((Player)sender,8, Integer.parseInt(args[1]));
+											}
+											else
+											{
+												Users.get(i).getLastTipic().getSections().get(j).printSubject((Player)sender);
+											}
 										}
 										else
 										{
@@ -253,7 +260,8 @@ public class Help extends JavaPlugin{
 					{
 						if(Users.get(i).getPlayer().equalsIgnoreCase(sender.getName()))
 						{
-							Users.get(i).setLastTipic(Main);
+							Users.get(i).clearHistory();
+							Users.get(i).addToHistroy(Main);
 						}
 					}
 					return true;

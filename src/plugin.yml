@@ -1,7 +1,7 @@
 name: McCity Help
 main: RiseOfDeath.Help.Help
 author: RiseOfDeath
-version: 0.1.5b
+version: 0.2.0
 database: false
 softdepend: [Permissions]
 website: minecraft-mccity.ru
