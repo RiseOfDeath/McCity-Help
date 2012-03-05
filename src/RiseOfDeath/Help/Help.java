@@ -300,24 +300,16 @@ public class Help extends JavaPlugin{
 					}
 					if(args[0].equalsIgnoreCase("subject"))
 					{
-						/*if(args.length>1)
-						{
-							String str=new String();
-							for(int i=1; i< args.length;i++)
-							{
-								str +=args[i] + " ";
-							}
-							
-							Hide.get(sender.getName()).setSubjectString(str);
-							sender.sendMessage("[McCity Help] Subject was assigned");
-							return true;
-						}
-						else
-						{
-							return false;
-						}*/	
 						sender.sendMessage("[McCity Help] This metod is outdated");
 						sender.sendMessage("[McCity Help] Use '/adminhelp addstring' to add a new line");
+						return true;
+					}
+					if(args[0].equalsIgnoreCase("reload"))
+					{
+						Main=new HelpTopic();
+						Main.setNoSub(false);
+						Main.setName("Main");
+						loadTitles();
 						return true;
 					}
 					
@@ -439,6 +431,8 @@ public class Help extends JavaPlugin{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		Main.addSection(Title);
+		
 	}
 	
 	private void loadTitles()

@@ -49,17 +49,45 @@ public class HelpTopic {
 		return Subject;
 	}
 	
+	@Deprecated
 	public void printSubject(Player Player)
 	{
-		Player.sendMessage(ChatColor.AQUA + "Subject:");
+		printSubject(Player, 8, 1);
+		/*Player.sendMessage(ChatColor.AQUA + "Subject:");
 		for(String str : Subject)
 		{
 			Player.sendMessage(str);
 		}
-		Player.sendMessage(ChatColor.AQUA + "End subject.");
+		Player.sendMessage(ChatColor.AQUA + "End subject.");*/
+		
 	}
 	
 	public void printSubject(Player Player, int strPerPage, int Page)
+	{
+		/*Player.sendMessage(ChatColor.AQUA + "Subject:");
+		for(int i=(Page-1)*strPerPage;(i<Page*strPerPage)&(i<Subject.size());i++)
+		{
+			Player.sendMessage(Subject.get(i));
+		}
+		if(Page*strPerPage>=Subject.size())
+		{
+			Player.sendMessage(ChatColor.AQUA + "End subject");
+		}
+		else
+		{
+			Player.sendMessage(ChatColor.AQUA + "End page.");
+		}*/
+		if(this.noSub)
+		{
+			printTopicText(Player,strPerPage,Page);
+		}
+		else
+		{
+			printTopicList(Player,strPerPage,Page);
+		}
+	}
+	
+	private void printTopicText(Player Player, int strPerPage, int Page)
 	{
 		Player.sendMessage(ChatColor.AQUA + "Subject:");
 		for(int i=(Page-1)*strPerPage;(i<Page*strPerPage)&(i<Subject.size());i++)
@@ -69,6 +97,23 @@ public class HelpTopic {
 		if(Page*strPerPage>=Subject.size())
 		{
 			Player.sendMessage(ChatColor.AQUA + "End subject");
+		}
+		else
+		{
+			Player.sendMessage(ChatColor.AQUA + "End page.");
+		}
+	}
+	
+	private void printTopicList(Player Player, int strPerPage, int Page)
+	{
+		Player.sendMessage(ChatColor.AQUA + "Subjects list:");
+		for(int i=(Page-1)*strPerPage;(i<Page*strPerPage)&(i<Sections.size());i++)
+		{
+			Player.sendMessage(Sections.get(i).getName());
+		}
+		if(Page*strPerPage>=Sections.size())
+		{
+			Player.sendMessage(ChatColor.AQUA + "End Subjects list");
 		}
 		else
 		{
