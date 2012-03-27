@@ -204,6 +204,18 @@ public class HelpTopic {
 		
 	}
 	
+	public HelpTopic findTopic(String name)
+	{
+		for(HelpTopic i: Sections)
+		{
+			if(i.getName().equalsIgnoreCase(name))
+			{
+				return i;
+			}
+		}
+		return null;
+	}
+	
 	public String toString()
 	{
 		String strBuf=new String();

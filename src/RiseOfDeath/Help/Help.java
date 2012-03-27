@@ -146,113 +146,45 @@ public class Help extends JavaPlugin{
 					page=-1;
 					isHavePage=false;
 				}
-				if(args.length!=0&&!isHavePage)
-				{		
+				if(args.length!=0 & !isHavePage)
+				{	
+					
 					for(int i=0;i<Users.size();i++)
 					{
 						
 						if(Users.get(i).getPlayer().equalsIgnoreCase(sender.getName()))
 						{
-							try
+							HelpTopic bufTopic;
+							if(args[0].equalsIgnoreCase("back"))
 							{
-								if(Users.get(i).getFromHistory().getSections().size()==0)
-								{
-									Users.get(i).addToHistroy(Main);
-									strBuf="Help topics:";
-									sender.sendMessage(strBuf);
-									strBuf=ChatColor.RED + "-Empty-";
-									sender.sendMessage(strBuf);
-									return true;
-								}
-							}
-							catch(Exception ex)
-							{
-								Users.get(i).addToHistroy(Main);
-								strBuf="Help topics:";
-								sender.sendMessage(strBuf);
-								log.info("[McCity Help][Error]" + "No sub sections");
+								Users.get(i).getFromHistory();
+								Users.get(i).readFromHistory().printSubject((Player) sender, 8, 1);
 								return true;
 							}
-							for(int j=0;j<Users.get(i).getFromHistory().getSections().size();j++)
+							bufTopic = Users.get(i).readFromHistory().findTopic(args[0]);
+							if(bufTopic!=null)
 							{
-								
-								if(Users.get(i).getFromHistory().getSections().get(j).getName().equalsIgnoreCase(args[0]))
+								if(args.length>1)
 								{
-									if(Users.get(i).getFromHistory().getSections().get(j).isNoSub())
-									{
-										if(hasPerm((Player)sender,Users.get(i).getFromHistory().getSections().get(j).getPermissions(), true))
-										{
-											if(args.length>1)
-											{
-												Users.get(i).getFromHistory().getSections().get(j).printSubject((Player)sender,8, Integer.parseInt(args[1]));
-											}
-											else
-											{
-												Users.get(i).getFromHistory().getSections().get(j).printSubject((Player)sender);
-											}
-										}
-										else
-										{
-											sender.sendMessage(ChatColor.AQUA + "Subject:");
-											sender.sendMessage(ChatColor.WHITE + "This subject is classified");
-										}
-										return true;
-									}
-									else
-									{
-										strBuf="Help topics:";
-										sender.sendMessage(strBuf);
-										try
-										{
-											if(Users.get(i).getFromHistory().getSections().get(j).getSections().size()==0)
-											{
-												strBuf="Empty folder :(";
-												sender.sendMessage(strBuf);
-												sender.sendMessage("Topic not found. Going to main page[1]");
-												Users.get(i).addToHistroy(Main);
-												return true;
-											}
-											for(int k=0;k < Users.get(i).getFromHistory().getSections().get(j).getSections().size();k++)
-											{
-												
-												strBuf=new String();
-												
-												if(Users.get(i).getFromHistory().getSections().get(j).getSections().get(k).isNoSub())
-												{
-													if(hasPerm((Player)sender,Users.get(i).getFromHistory().getSections().get(j).getSections().get(k).getPermissions(), true))
-													{
-														strBuf=ChatColor.GREEN + Users.get(i).getFromHistory().getSections().get(j).getSections().get(k).getName() + " [TOPIC]";
-													}
-													else
-													{
-														strBuf=ChatColor.RED + Users.get(i).getFromHistory().getSections().get(j).getSections().get(k).getName() + " [TOPIC][CLASSIFIED]";
-													}
-												}
-												else
-												{
-													strBuf=ChatColor.YELLOW + Users.get(i).getFromHistory().getSections().get(j).getSections().get(k).getName() + " [SUBFOLDER]";
-												}											
-												sender.sendMessage(strBuf);
-											}
-										}
-										catch(Exception ex)
-										{
-											ex.printStackTrace();
-											return true;
-										}
-										Users.get(i).addToHistroy(Users.get(i).getFromHistory().getSections().get(j));
-										//Users.get(i).addToHistroy(Users.get(i).getLastTipic().getSections().get(j));
-										return true;
-									}
+									bufTopic.printSubject((Player) sender, 8, Integer.parseInt(args[1]));
 								}
 								else
 								{
+									bufTopic.printSubject((Player) sender, 8, 1);
 								}
-								
+								if(!bufTopic.isNoSub())
+								{
+									Users.get(i).addToHistroy(bufTopic);
+								}
+								return true;
 							}
-							sender.sendMessage("Topic not found. Going to main page");
-							Users.get(i).addToHistroy(Main);
-							return true;	
+							else
+							{
+								sender.sendMessage("Topic not found. Going to main page");
+								
+								Users.get(i).addToHistroy(Main);
+								return true;
+							}
 						}
 						else
 						{
@@ -281,6 +213,8 @@ public class Help extends JavaPlugin{
 						strBuf=ChatColor.GREEN + "For example, try to write " + ChatColor.GOLD + "/help " + Main.getSections().get(0).getName();
 						sender.sendMessage(strBuf);
 						strBuf="Not case sensitive";
+						sender.sendMessage(strBuf);
+						strBuf="Type " + ChatColor.GOLD + "/help back " + "to open previous topic/subfolder";
 						sender.sendMessage(strBuf);
 					}
 					else
@@ -640,7 +574,7 @@ public class Help extends JavaPlugin{
 	{
 		HelpUser buf = new HelpUser();
 		buf.setPlayer(PlayerName);
-		buf.setLastTipic(this.Main);
+		buf.addToHistroy(this.Main);
 		Users.add(buf);
 	}
 	

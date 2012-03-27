@@ -72,6 +72,10 @@ public class HelpUser {
 		HelpTopic buf;
 		int buf1;
 		buf1 = History.size();
+		if(buf1==0)
+		{
+			return null;
+		}
 		buf = History.get(buf1-1);
 		return buf;
 	}
@@ -85,6 +89,10 @@ public class HelpUser {
 		HelpTopic buf;
 		int buf1;
 		buf1 = History.size();
+		if(buf1==0)
+		{
+			return null;
+		}
 		buf = History.get(buf1-1);
 		History.remove(buf1-1);
 		return buf;
