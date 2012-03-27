@@ -56,8 +56,7 @@ public class Help extends JavaPlugin{
     private Map<String, HelpTopic> Hide;
     
     
-    @SuppressWarnings("unused")
-	private HelpPlayerListener playerListener;
+	public HelpPlayerListener playerListener;
     
 	@Override
 	public void onDisable() {
@@ -71,7 +70,7 @@ public class Help extends JavaPlugin{
 		playerListener = new HelpPlayerListener(this);
 		Users = new Vector<HelpUser>();
 		Hide=new HashMap<String, HelpTopic>();
-		Main=new HelpTopic();
+		Main=new HelpTopic(this);
 		Main.setNoSub(false);
 		Main.setName("Main");
 		server=this.getServer();
@@ -122,12 +121,32 @@ public class Help extends JavaPlugin{
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) 
 
 	{
+		boolean isHavePage=false;
+		int page = -1;
 		String strBuf;
 		if(label.equalsIgnoreCase("help"))
 		{
 			if(hasPerm((Player)sender,"mccityhelp.user", true))
 			{
-				if(args.length!=0)
+				
+				try
+				{
+					if(args.length!=0)
+					{
+						page=Integer.parseInt(args[0]);
+						isHavePage=true;
+					}
+					else
+					{
+						isHavePage=false;
+					}
+				}
+				catch(Exception ex)
+				{
+					page=-1;
+					isHavePage=false;
+				}
+				if(args.length!=0&&!isHavePage)
 				{		
 					for(int i=0;i<Users.size();i++)
 					{
@@ -136,9 +155,9 @@ public class Help extends JavaPlugin{
 						{
 							try
 							{
-								if(Users.get(i).getLastTipic().getSections().size()==0)
+								if(Users.get(i).getFromHistory().getSections().size()==0)
 								{
-									Users.get(i).setLastTipic(Main);
+									Users.get(i).addToHistroy(Main);
 									strBuf="Help topics:";
 									sender.sendMessage(strBuf);
 									strBuf=ChatColor.RED + "-Empty-";
@@ -148,28 +167,28 @@ public class Help extends JavaPlugin{
 							}
 							catch(Exception ex)
 							{
-								Users.get(i).setLastTipic(Main);
+								Users.get(i).addToHistroy(Main);
 								strBuf="Help topics:";
 								sender.sendMessage(strBuf);
 								log.info("[McCity Help][Error]" + "No sub sections");
 								return true;
 							}
-							for(int j=0;j<Users.get(i).getLastTipic().getSections().size();j++)
+							for(int j=0;j<Users.get(i).getFromHistory().getSections().size();j++)
 							{
 								
-								if(Users.get(i).getLastTipic().getSections().get(j).getName().equalsIgnoreCase(args[0]))
+								if(Users.get(i).getFromHistory().getSections().get(j).getName().equalsIgnoreCase(args[0]))
 								{
-									if(Users.get(i).getLastTipic().getSections().get(j).isNoSub())
+									if(Users.get(i).getFromHistory().getSections().get(j).isNoSub())
 									{
-										if(hasPerm((Player)sender,Users.get(i).getLastTipic().getSections().get(j).getPermissions(), true))
+										if(hasPerm((Player)sender,Users.get(i).getFromHistory().getSections().get(j).getPermissions(), true))
 										{
 											if(args.length>1)
 											{
-												Users.get(i).getLastTipic().getSections().get(j).printSubject((Player)sender,8, Integer.parseInt(args[1]));
+												Users.get(i).getFromHistory().getSections().get(j).printSubject((Player)sender,8, Integer.parseInt(args[1]));
 											}
 											else
 											{
-												Users.get(i).getLastTipic().getSections().get(j).printSubject((Player)sender);
+												Users.get(i).getFromHistory().getSections().get(j).printSubject((Player)sender);
 											}
 										}
 										else
@@ -185,33 +204,33 @@ public class Help extends JavaPlugin{
 										sender.sendMessage(strBuf);
 										try
 										{
-											if(Users.get(i).getLastTipic().getSections().get(j).getSections().size()==0)
+											if(Users.get(i).getFromHistory().getSections().get(j).getSections().size()==0)
 											{
 												strBuf="Empty folder :(";
 												sender.sendMessage(strBuf);
 												sender.sendMessage("Topic not found. Going to main page[1]");
-												Users.get(i).setLastTipic(Main);
+												Users.get(i).addToHistroy(Main);
 												return true;
 											}
-											for(int k=0;k < Users.get(i).getLastTipic().getSections().get(j).getSections().size();k++)
+											for(int k=0;k < Users.get(i).getFromHistory().getSections().get(j).getSections().size();k++)
 											{
 												
 												strBuf=new String();
 												
-												if(Users.get(i).getLastTipic().getSections().get(j).getSections().get(k).isNoSub())
+												if(Users.get(i).getFromHistory().getSections().get(j).getSections().get(k).isNoSub())
 												{
-													if(hasPerm((Player)sender,Users.get(i).getLastTipic().getSections().get(j).getSections().get(k).getPermissions(), true))
+													if(hasPerm((Player)sender,Users.get(i).getFromHistory().getSections().get(j).getSections().get(k).getPermissions(), true))
 													{
-														strBuf=ChatColor.GREEN + Users.get(i).getLastTipic().getSections().get(j).getSections().get(k).getName() + " [TOPIC]";
+														strBuf=ChatColor.GREEN + Users.get(i).getFromHistory().getSections().get(j).getSections().get(k).getName() + " [TOPIC]";
 													}
 													else
 													{
-														strBuf=ChatColor.RED + Users.get(i).getLastTipic().getSections().get(j).getSections().get(k).getName() + " [TOPIC][CLASSIFIED]";
+														strBuf=ChatColor.RED + Users.get(i).getFromHistory().getSections().get(j).getSections().get(k).getName() + " [TOPIC][CLASSIFIED]";
 													}
 												}
 												else
 												{
-													strBuf=ChatColor.YELLOW + Users.get(i).getLastTipic().getSections().get(j).getSections().get(k).getName() + " [SUBFOLDER]";
+													strBuf=ChatColor.YELLOW + Users.get(i).getFromHistory().getSections().get(j).getSections().get(k).getName() + " [SUBFOLDER]";
 												}											
 												sender.sendMessage(strBuf);
 											}
@@ -221,7 +240,7 @@ public class Help extends JavaPlugin{
 											ex.printStackTrace();
 											return true;
 										}
-										Users.get(i).setLastTipic(Users.get(i).getLastTipic().getSections().get(j));
+										Users.get(i).addToHistroy(Users.get(i).getFromHistory().getSections().get(j));
 										//Users.get(i).addToHistroy(Users.get(i).getLastTipic().getSections().get(j));
 										return true;
 									}
@@ -232,7 +251,7 @@ public class Help extends JavaPlugin{
 								
 							}
 							sender.sendMessage("Topic not found. Going to main page");
-							Users.get(i).setLastTipic(Main);
+							Users.get(i).addToHistroy(Main);
 							return true;	
 						}
 						else
@@ -247,24 +266,18 @@ public class Help extends JavaPlugin{
 				}
 				else
 				{
-					strBuf="Help topics:";
-					sender.sendMessage(strBuf);
-					for(int i=0;i < Main.getSections().size();i++)
+					
+					if(Main.getSections().size()>0)
 					{
-						strBuf=new String();
-						if(Main.getSections().get(i).isNoSub())
+						if(isHavePage&&page>=0)
 						{
-							strBuf=ChatColor.GREEN + Main.getSections().get(i).getName()  + " [TOPIC]";
+							Main.printSubject((Player)sender, 8, page);
 						}
 						else
 						{
-							strBuf=ChatColor.YELLOW + Main.getSections().get(i).getName() + " [SUBFOLDER]";
+							Main.printSubject((Player)sender, 8, 1);							
 						}
-						sender.sendMessage(strBuf);
-						
-					}
-					if(Main.getSections().size()>0)
-					{
+
 						strBuf=ChatColor.GREEN + "For example, try to write " + ChatColor.GOLD + "/help " + Main.getSections().get(0).getName();
 						sender.sendMessage(strBuf);
 						strBuf="Not case sensitive";
@@ -470,7 +483,7 @@ public class Help extends JavaPlugin{
 			
 			if(fileBuf.listFiles()[i].isDirectory())
 			{
-				buf=new HelpTopic();
+				buf=new HelpTopic(this);
 				buf.setNoSub(false);
 				buf.setName(fileBuf.listFiles()[i].getName());
 				if(fileBuf.listFiles()[i].listFiles().length==0)
@@ -495,7 +508,7 @@ public class Help extends JavaPlugin{
 			}
 			else
 			{
-				buf=new HelpTopic();
+				buf=new HelpTopic(this);
 				buf.setNoSub(true);
 				buf.setSubject(getSubject(fileBuf.listFiles()[i]));
 				buf.setName(getName(fileBuf.listFiles()[i]));
@@ -510,7 +523,7 @@ public class Help extends JavaPlugin{
 		HelpTopic buf,buf1;
 			if(fileBuf.isDirectory())
 			{
-				buf=new HelpTopic();
+				buf=new HelpTopic(this);
 				buf.setNoSub(false);
 				buf.setSubject(getSubject(fileBuf));
 				buf.setName(fileBuf.getName());
@@ -526,7 +539,7 @@ public class Help extends JavaPlugin{
 			}
 			else
 			{
-				buf=new HelpTopic();
+				buf=new HelpTopic(this);
 				buf.setNoSub(true);
 				//buf.setSubjectString(getSubjectString(fileBuf));
 				buf.setSubject(getSubject(fileBuf));

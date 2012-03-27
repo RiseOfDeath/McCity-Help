@@ -28,6 +28,7 @@ import org.bukkit.entity.Player;
 
 public class HelpTopic {
 	
+	private Help plugin;
 	private Vector <HelpTopic> Sections;
 	private boolean noSub;
 	private String Name;
@@ -40,6 +41,14 @@ public class HelpTopic {
 		Sections=new  Vector<HelpTopic>();
 		Permissions = "mccityhelp.user";
 		Subject=new ArrayList<String>();
+	}
+	public HelpTopic(Help plugin)
+	{
+		noSub=true;
+		Sections=new  Vector<HelpTopic>();
+		Permissions = "mccityhelp.user";
+		Subject=new ArrayList<String>();
+		this.plugin=plugin;
 	}
 	
 	
@@ -72,30 +81,11 @@ public class HelpTopic {
 	public void printSubject(Player Player)
 	{
 		printSubject(Player, 8, 1);
-		/*Player.sendMessage(ChatColor.AQUA + "Subject:");
-		for(String str : Subject)
-		{
-			Player.sendMessage(str);
-		}
-		Player.sendMessage(ChatColor.AQUA + "End subject.");*/
-		
 	}
 	
 	public void printSubject(Player Player, int strPerPage, int Page)
 	{
-		/*Player.sendMessage(ChatColor.AQUA + "Subject:");
-		for(int i=(Page-1)*strPerPage;(i<Page*strPerPage)&(i<Subject.size());i++)
-		{
-			Player.sendMessage(Subject.get(i));
-		}
-		if(Page*strPerPage>=Subject.size())
-		{
-			Player.sendMessage(ChatColor.AQUA + "End subject");
-		}
-		else
-		{
-			Player.sendMessage(ChatColor.AQUA + "End page.");
-		}*/
+
 		if(this.noSub)
 		{
 			printTopicText(Player,strPerPage,Page);
@@ -108,27 +98,55 @@ public class HelpTopic {
 	
 	private void printTopicText(Player Player, int strPerPage, int Page)
 	{
-		Player.sendMessage(ChatColor.AQUA + "Subject:");
-		for(int i=(Page-1)*strPerPage;(i<Page*strPerPage)&(i<Subject.size());i++)
+		if(plugin.hasPerm(Player,this.getPermissions(), true))
 		{
-			Player.sendMessage(Subject.get(i));
-		}
-		if(Page*strPerPage>=Subject.size())
-		{
-			Player.sendMessage(ChatColor.AQUA + "End subject");
+			Player.sendMessage(ChatColor.AQUA + "Subject:");
+			for(int i=(Page-1)*strPerPage;(i<Page*strPerPage)&(i<Subject.size());i++)
+			{
+				Player.sendMessage(Subject.get(i));
+			}
+			if(Page*strPerPage>=Subject.size())
+			{
+				Player.sendMessage(ChatColor.AQUA + "End subject");
+			}
+			else
+			{
+				Player.sendMessage(ChatColor.AQUA + "End page.");
+			}
 		}
 		else
 		{
-			Player.sendMessage(ChatColor.AQUA + "End page.");
+			Player.sendMessage(ChatColor.AQUA + "Subject:");
+			Player.sendMessage(ChatColor.WHITE + "This subject is classified");
+			Player.sendMessage(ChatColor.AQUA + "End subject");
 		}
+		
 	}
 	
 	private void printTopicList(Player Player, int strPerPage, int Page)
 	{
 		Player.sendMessage(ChatColor.AQUA + "Subjects list:");
+		String str;
 		for(int i=(Page-1)*strPerPage;(i<Page*strPerPage)&(i<Sections.size());i++)
 		{
-			Player.sendMessage(Sections.get(i).getName());
+			str="";
+			
+			if(Sections.get(i).noSub)
+			{
+				str=ChatColor.GREEN + Sections.get(i).getName();
+			}
+			else
+			{
+				str=ChatColor.YELLOW + Sections.get(i).getName();
+			}
+			
+			if(!plugin.hasPerm(Player,this.getPermissions(), true))
+			{
+				str+=" [CLASSIFIED]";
+			}
+			str+=ChatColor.WHITE;
+			Player.sendMessage(str);
+			str=null;
 		}
 		if(Page*strPerPage>=Sections.size())
 		{
@@ -186,10 +204,6 @@ public class HelpTopic {
 		
 	}
 	
-	/*
-	 * А что делать.. надо такие вещи делать, надо...
-	 * Только даже не знаю, тчо тут вернуть можно.. не выдавать же все в  одной строке...
-	 */
 	public String toString()
 	{
 		String strBuf=new String();
