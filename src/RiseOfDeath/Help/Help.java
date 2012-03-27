@@ -214,7 +214,7 @@ public class Help extends JavaPlugin{
 						sender.sendMessage(strBuf);
 						strBuf="Not case sensitive";
 						sender.sendMessage(strBuf);
-						strBuf="Type " + ChatColor.GOLD + "/help back " + "to open previous topic/subfolder";
+						strBuf="Type " + ChatColor.GOLD + "/help back " + ChatColor.WHITE + "to open previous topic/subfolder";
 						sender.sendMessage(strBuf);
 					}
 					else
