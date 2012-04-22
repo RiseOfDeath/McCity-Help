@@ -108,13 +108,10 @@ public class Help extends JavaPlugin{
 				e.printStackTrace();
 			}
 		}
-		
 		loadTitles();
-		
 		//getServer().getPluginManager().registerEvents(new HelpPlayerListener(), this);
 		//pm.registerEvent(Event.Type.PLAYER_JOIN, this.playerListener, Event.Priority.Normal, this);
 		log.info("[McCity Help] Enabled");
-		
 	}
 	
 	@Override

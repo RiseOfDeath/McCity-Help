@@ -26,6 +26,9 @@ import java.util.Vector;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+/**
+ * This class can be Help topic or Subfolder.
+ */
 public class HelpTopic {
 	
 	private Help plugin;
@@ -34,7 +37,14 @@ public class HelpTopic {
 	private String Name;
 	private String Permissions;
 	private List<String> Subject;
+	private List<String> Tags;
 	
+	/**
+	 * Basic constructor. Do not use.
+	 * @param
+	 * @return
+	 * @see  
+	 */
 	public HelpTopic()
 	{
 		noSub=true;
@@ -42,6 +52,13 @@ public class HelpTopic {
 		Permissions = "mccityhelp.user";
 		Subject=new ArrayList<String>();
 	}
+	
+	/**
+	 * Recommended constructor
+	 * @param plugin Current plugin
+	 * @return
+	 * @see  
+	 */
 	public HelpTopic(Help plugin)
 	{
 		noSub=true;
@@ -52,21 +69,46 @@ public class HelpTopic {
 	}
 	
 	
+	/**
+	 *<b><li>isNoSub()</b>
+	 *<p>
+	 *	{@code public boolean isNoSub()}
+	 *<p>
+	 *	Check HelpTopic's type.
+	 * 
+	 * @author Anton Belousov
+	 * @return 
+	 * <code>True</code> if it Topic;
+	 * <p>
+	 * <code>False</code> if it Subfolder; 
+	 */
 	public boolean isNoSub()
 	{
 		return noSub;
 	}
 	
+	/**
+	 * Set permission for this topic
+	 * Only one permission avaible
+	 * (Now no any effect for subfolders) 
+	 */
 	public void setPermissions(String Permissions)
 	{
 		this.Permissions=Permissions;
 	}
 	
+	/**
+	 * Get current permission for this topic
+	 */
 	public String getPermissions()
 	{
 		return Permissions;
 	}
 	
+	/**
+	 * Set subject of this Topic
+	 * Receive List of topic's strings.
+	 */
 	public void setSubject(List<String> Subject)
 	{
 		this.Subject = Subject;
@@ -156,6 +198,21 @@ public class HelpTopic {
 		{
 			Player.sendMessage(ChatColor.AQUA + "End page.");
 		}
+	}
+	
+	public void addTag(String Tag)
+	{
+		Tags.add(Tag);
+	}
+	
+	public void addTag(HelpTag Tag)
+	{
+		Tags.add(Tag.getTag());
+	}
+	
+	public List<String> getTags()
+	{
+		return Tags;
 	}
 	
 	

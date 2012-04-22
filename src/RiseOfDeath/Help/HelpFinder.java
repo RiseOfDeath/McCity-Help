@@ -19,49 +19,60 @@
 
 package RiseOfDeath.Help;
 
-import java.util.ArrayList;
 import java.util.List;
 
-/*
- * Unused
- * In future will be used for search.
- */
-public class HelpTag {
+public class HelpFinder {
+	
+	private List<HelpTag> Tags;
 	private List<HelpTopic> Subjects;
-	private String Tag;
-	
-	public HelpTag()
+	public HelpTopic findName(String Name)
 	{
-		Tag=null;
-		Subjects = new ArrayList<HelpTopic>();
+		return null;
+	}
+		
+	public List<HelpTopic> findTag(String Name)
+	{
+		for(HelpTag i: Tags)
+		{
+			if(i.getTag().equalsIgnoreCase(Name))
+			{
+				return i.getTopics();
+			}
+		}
+		return null;
 	}
 	
-	public HelpTag(String tag)
+	public void addTopic(HelpTopic Subject)
 	{
-		Tag=tag;
-		Subjects = new ArrayList<HelpTopic>();
+		Subjects.add(Subject);
+		List<String> sTags=Subject.getTags();
+		for(String i: sTags)
+		{
+			addTag(i).addTopic(Subject);
+		}
 	}
 	
-	public void setTag(String tag)
+	public HelpTag addTag(String Tag)
 	{
-		this.Tag=tag;
+		for(HelpTag i: Tags)
+		{
+			if(i.getTag().equalsIgnoreCase(Tag))
+			{
+				return i;
+			}
+		}
+		HelpTag newTag=new HelpTag(Tag);
+		Tags.add(newTag);
+		return newTag;
 	}
 	
-	public void addTopic(HelpTopic topic)
+	public void addTag(HelpTag Tag)
 	{
-		Subjects.add(topic);
+		addTag(Tag.getTag());
+	}
+	
+	public void removeTopic(HelpTopic Subject)
+	{
 		
 	}
-	
-	public String getTag()
-	{
-		return Tag;
-	}
-	
-	public List<HelpTopic> getTopics()
-	{
-		return Subjects;
-	}
-	
-
 }
