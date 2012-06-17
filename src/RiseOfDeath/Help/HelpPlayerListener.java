@@ -41,7 +41,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
    {
 	   plugin.deleteUser(event.getPlayer().getName());
 	   plugin.addUser(event.getPlayer().getName());
-	   plugin.log.info("[McCity Help][Info]" + event.getPlayer().getName() + " added");
+	   //plugin.log.info("[McCity Help][Info]" + event.getPlayer().getName() + " added");
 	   
    }
    
@@ -49,6 +49,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
    public void onPlayerQuit(PlayerQuitEvent event) 
    {
 	   plugin.deleteUser(event.getPlayer().getName());
-	   plugin.log.info("[McCity Help][Info]" + event.getPlayer().getName() + " removed");
+	   //plugin.log.info("[McCity Help][Info]" + event.getPlayer().getName() + " removed");
    }
  }

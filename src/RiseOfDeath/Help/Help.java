@@ -54,7 +54,7 @@ public class Help extends JavaPlugin{
     private Vector<HelpUser> Users;
     private HelpTopic Main;
     private Map<String, HelpTopic> Hide;
-    
+    private HelpFinder Finder;
     
 	public HelpPlayerListener playerListener;
     
@@ -73,6 +73,7 @@ public class Help extends JavaPlugin{
 		Main=new HelpTopic(this);
 		Main.setNoSub(false);
 		Main.setName("Main");
+		Finder=new HelpFinder();
 		server=this.getServer();
 		pm = server.getPluginManager();
 		log=Logger.getLogger("Minecraft");
@@ -80,6 +81,8 @@ public class Help extends JavaPlugin{
 		if(permissions==null)
 		{
 			log.info("[McCity Help] No any permisions plugin found.");
+			log.info("[McCity Help] Any user can read any topic.");
+			log.info("[McCity Help] Only operators can use /adminhelp.");	
 		}
 		
 		if(server.getOnlinePlayers().length!=0)
@@ -98,9 +101,14 @@ public class Help extends JavaPlugin{
 			file=new File(this.getDataFolder(), "main/about.yml");
 			cfg = YamlConfiguration.loadConfiguration(file);
 			cfg.set("Info.Title", "About");
-			cfg.set("Info.Tags", "About, Info, Triva");
+			
+			List<String> listBuf=new ArrayList<String>();
+			listBuf.add("About");
+			listBuf.add("Info");
+			listBuf.add("Triva");
+			cfg.set("Info.Tags", listBuf);
 			cfg.set("Info.Permissions", "mccityhelp.user");
-			cfg.set("Text", "This is help plugin by " + ChatColor.GREEN +"RiseOfDeath.<endl>Made special for " + ChatColor.GREEN+"McCity" + ChatColor.WHITE+" server.<endl>Visit us at " +ChatColor.GREEN+"http://minecraft-mccity.ru/plugins:eng<endl>§kWe have cookies");
+			cfg.set("Text", "This is help plugin by " + ChatColor.GREEN +"RiseOfDeath.<endl>Made special for " + ChatColor.GREEN+"McCity" + ChatColor.WHITE+" server.<endl>Visit us at " +ChatColor.GREEN+ChatColor.UNDERLINE+"http://minecraft-mccity.ru/plugins:eng<endl>§kWe have cookies");
 			try {
 				cfg.save(file);
 			} catch (IOException e) {
@@ -125,7 +133,6 @@ public class Help extends JavaPlugin{
 		{
 			if(hasPerm((Player)sender,"mccityhelp.user", true))
 			{
-				
 				try
 				{
 					if(args.length!=0)
@@ -155,6 +162,36 @@ public class Help extends JavaPlugin{
 							if(args[0].equalsIgnoreCase("back"))
 							{
 								Users.get(i).getFromHistory();
+								Users.get(i).readFromHistory().printSubject((Player) sender, 8, 1);
+								return true;
+							}
+							if(args[0].equalsIgnoreCase("find"))
+							{
+								if(args.length<2)
+								{	
+									sender.sendMessage("Wrong command.");
+									sender.sendMessage("Try somthing like: /help find [topic_name]");
+									return true;
+								}
+								bufTopic=Finder.findName(args[1]);
+								if(bufTopic==null)
+								{
+									bufTopic=new HelpTopic(this);
+									bufTopic.setName("Search result for '" + args[1]+"'");
+									bufTopic.setNoSub(false);
+									bufTopic.setPermissions("mccityhelp.user");
+									List<HelpTopic> listbuf=Finder.findTag(args[1]);
+									if(listbuf==null)
+									{
+										sender.sendMessage("Sorry, i don't found anything.");
+										return true;
+									}
+									for(HelpTopic current:listbuf)
+									{
+										bufTopic.addSection(current);
+									}
+								}
+								Users.get(i).addToHistroy(bufTopic);
 								Users.get(i).readFromHistory().printSubject((Player) sender, 8, 1);
 								return true;
 							}
@@ -345,7 +382,21 @@ public class Help extends JavaPlugin{
 						sender.sendMessage("§dThis is 'd' color");
 						sender.sendMessage("§eThis is 'e' color");
 						sender.sendMessage("§fThis is 'f' color");
+						sender.sendMessage("'n' is §nunderlined text");
+						sender.sendMessage("'l' is §lbold text");
+						sender.sendMessage("'o' is §oitalic text");
 						//sender.sendMessage("§kThis is 'k' color");
+						return true;
+					}
+					if(args[0].equalsIgnoreCase("tags"))
+					{
+						List<HelpTag> tags=Finder.getTags();
+						sender.sendMessage("Tags list:");
+						for(HelpTag i: tags)
+						{
+							sender.sendMessage(i.getTag());
+						}
+						sender.sendMessage("End of tags list.");
 						return true;
 					}
 				}
@@ -444,6 +495,12 @@ public class Help extends JavaPlugin{
 				buf.setSubject(getSubject(fileBuf.listFiles()[i]));
 				buf.setName(getName(fileBuf.listFiles()[i]));
 				buf.setPermissions(getPermissions(fileBuf.listFiles()[i]));
+				List<String> lstrBuf=getTags(fileBuf.listFiles()[i]);
+				for(String c:lstrBuf)
+				{
+					buf.addTag(c);
+				}
+				Finder.addTopic(buf);
 				Main.addSection(buf);
 			}
 		}
@@ -472,12 +529,37 @@ public class Help extends JavaPlugin{
 			{
 				buf=new HelpTopic(this);
 				buf.setNoSub(true);
-				//buf.setSubjectString(getSubjectString(fileBuf));
 				buf.setSubject(getSubject(fileBuf));
 				buf.setName(getName(fileBuf));
 				buf.setPermissions(getPermissions(fileBuf));
+				List<String> lstrBuf=getTags(fileBuf);
+				for(String i:lstrBuf)
+				{
+					buf.addTag(i);
+				}
+				Finder.addTopic(buf);
 				return buf;
 			}
+	}
+	
+	
+	private List<String> getTags(File textFile)
+	{
+		FileConfiguration cfg;
+		List<String> Buf;
+		
+		cfg = YamlConfiguration.loadConfiguration(textFile);
+		Buf=cfg.getStringList("Info.Tags");
+		if(Buf==null)
+		{
+			log.info("NUll in " + cfg.getName());
+		}
+		if(Buf.isEmpty())
+		{
+			log.info("I can read any tags in " + textFile.getName());
+			log.info("It have " + Buf.size() +" tags");
+		}
+		return Buf;
 	}
 	
 	private String getSubjectString(File textFile)
@@ -489,7 +571,7 @@ public class Help extends JavaPlugin{
 		strBuf=cfg.getString("Text");
 		if(strBuf==null)
 		{
-			log.info("[McCity Help] No any content in " + textFile.getName());
+			//log.info("[McCity Help] No any content in " + textFile.getName());
 			strBuf=ChatColor.RED + "No any text or wrong text.";
 		}
 		strBuf=strBuf.replaceAll("&0", "§0");
@@ -508,6 +590,9 @@ public class Help extends JavaPlugin{
 		strBuf=strBuf.replaceAll("&d", "§d");
 		strBuf=strBuf.replaceAll("&e", "§e");
 		strBuf=strBuf.replaceAll("&f", "§f");
+		strBuf=strBuf.replaceAll("&n", "§n");
+		strBuf=strBuf.replaceAll("&l", "§l");
+		strBuf=strBuf.replaceAll("&o", "§o");
 		strBuf=strBuf.replaceAll("&k", "§k");
 		return strBuf;
 	}

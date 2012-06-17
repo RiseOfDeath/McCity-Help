@@ -1,7 +1,7 @@
 name: McCity Help
 main: RiseOfDeath.Help.Help
 author: RiseOfDeath
-version: 0.2.2
+version: 0.3.0
 database: false
 softdepend: [Permissions]
 website: minecraft-mccity.ru
@@ -10,9 +10,14 @@ commands:
       description: use for getting help
       usage: |
          /help - for help
-         /help [topic_name] - print this topic
+         /help [topic_name] - print this topic (they are green)
+         /help [subfolder_name] - open subfolder (they are yellow)
+         /help back - open previous folder (close current topic, and go to his folder)
+         /help find [topic_name] - try find (and show) topic [topic_name]
+         /help find [tag_name] - find and show list of all topics, which have this tag. 
+         Just type after /help [any_topic_from_the_list_of_founded_topics]
    adminhelp:
-      description: use for getting help
+      description: use for setting help
       usage: |
          /adminhelp new [title]- create new topic
          /adminhelp addstring [topic's string]  - add new string into this topic

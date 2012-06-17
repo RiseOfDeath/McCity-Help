@@ -19,14 +19,38 @@
 
 package RiseOfDeath.Help;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HelpFinder {
 	
 	private List<HelpTag> Tags;
 	private List<HelpTopic> Subjects;
+	private Help plugin;
+	
+	public HelpFinder()
+	{
+		Tags=new ArrayList<HelpTag>();
+		Subjects=new ArrayList<HelpTopic>();
+	}
+	
+	public HelpFinder(Help plugin)
+	{
+		Tags=new ArrayList<HelpTag>();
+		Subjects=new ArrayList<HelpTopic>();
+		this.plugin=plugin;
+	}
+	
+	
 	public HelpTopic findName(String Name)
 	{
+		for(HelpTopic i:Subjects)
+		{
+			if(i.getName().equalsIgnoreCase(Name))
+			{
+				return i;
+			}
+		}
 		return null;
 	}
 		
@@ -46,9 +70,11 @@ public class HelpFinder {
 	{
 		Subjects.add(Subject);
 		List<String> sTags=Subject.getTags();
+		HelpTag bufTag;
 		for(String i: sTags)
 		{
-			addTag(i).addTopic(Subject);
+			bufTag=addTag(i);
+			bufTag.addTopic(Subject);
 		}
 	}
 	
@@ -69,6 +95,12 @@ public class HelpFinder {
 	public void addTag(HelpTag Tag)
 	{
 		addTag(Tag.getTag());
+	}
+	
+	
+	public List<HelpTag> getTags()
+	{
+		return Tags;
 	}
 	
 	public void removeTopic(HelpTopic Subject)

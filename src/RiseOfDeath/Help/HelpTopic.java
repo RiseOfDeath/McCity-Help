@@ -51,6 +51,7 @@ public class HelpTopic {
 		Sections=new  Vector<HelpTopic>();
 		Permissions = "mccityhelp.user";
 		Subject=new ArrayList<String>();
+		Tags=new ArrayList<String>();
 	}
 	
 	/**
@@ -65,7 +66,9 @@ public class HelpTopic {
 		Sections=new  Vector<HelpTopic>();
 		Permissions = "mccityhelp.user";
 		Subject=new ArrayList<String>();
+		Tags=new ArrayList<String>();
 		this.plugin=plugin;
+		
 	}
 	
 	
